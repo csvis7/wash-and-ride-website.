@@ -1,227 +1,289 @@
 import { useState, type ReactNode } from 'react';
-import { ArrowUpRight, ChevronRight, Menu, X } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ChevronRight,
+  Clock3,
+  MapPinned,
+  Menu,
+  Star,
+  X,
+} from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import logoAsset from '@assets/wash-and-ryde/facebook-profile.jpg';
-import washPhoto from '@assets/wash-and-ryde/official-og.jpg';
+import washPhoto from '@assets/wash-and-ryde-actual/google-photo-portrait.jpg';
+import streetViewPhoto from '@assets/wash-and-ryde-actual/google-streetview.jpg';
 
 const queryClient = new QueryClient();
+const mapsLink = 'https://maps.app.goo.gl/iHbLMBgPttzdUzND9';
+const address = 'WASH&RIDE PALAVAYIL NILAM, PO, V K Rd, near TVS NEW ATHOLI MOTORS, Thalakulathur, Kozhikode, Kerala 673317, India';
 
 const navItems = [
   { label: 'Services', href: '#services' },
-  { label: 'The studio', href: '#studio' },
-  { label: 'Process', href: '#process' },
-  { label: 'Gallery', href: '#gallery' },
+  { label: 'Our place', href: '#place' },
+  { label: 'Hours', href: '#hours' },
+  { label: 'Reviews', href: '#reviews' },
 ];
 
 const services = [
-  ['01', 'Paint correction', 'Restore clarity, depth and reflection to tired paintwork.'],
-  ['02', 'Ceramic coating', 'Long-term protection with a finish that keeps giving back.'],
-  ['03', 'Interior detailing', 'A reset for the surfaces you live with every day.'],
-  ['04', 'Exterior detailing', 'A meticulous wash, decontamination and finishing touch.'],
+  ['01', 'Foam wash', 'A thorough exterior wash to lift the everyday dust, road film and Kerala rain marks.'],
+  ['02', 'Pressure wash', 'Focused cleaning for the wheels, lower body and hard-to-reach places.'],
+  ['03', 'Interior clean', 'A practical reset for the cabin, so the drive home feels fresh too.'],
+  ['04', 'Full car wash', 'A complete clean, inside and out, done with care by the local team.'],
 ];
 
-function BrandMark({ className = '' }: { className?: string }) {
+const hours = [
+  ['Monday', '9 AM–8 PM'],
+  ['Tuesday', '9 AM–1 AM'],
+  ['Wednesday', '9 AM–8 PM'],
+  ['Thursday', '9 AM–8 PM'],
+  ['Friday', '9 AM–8 PM'],
+  ['Saturday', '9 AM–6 PM'],
+  ['Sunday', '9 AM–8 PM'],
+];
+
+function Wordmark({ footer = false }: { footer?: boolean }) {
   return (
-    <span className={`brand-mark ${className}`}>
-      <img src={logoAsset} alt="Wash & Ryde" />
+    <span className="wordmark" data-testid={footer ? 'text-footer-wordmark' : 'text-wordmark'}>
+      <span className="wordmark-sign" aria-hidden="true">W<span>R</span></span>
+      <span className="wordmark-text">WASH<span>&amp;RIDE</span></span>
     </span>
   );
 }
 
-function ArrowLink({ children, href, className = '' }: { children: ReactNode; href: string; className?: string }) {
+function MapButton({ children, className = 'button button-primary' }: { children: ReactNode; className?: string }) {
   return (
-    <a className={`button button-primary ${className}`} href={href} data-testid={`link-${String(children).toLowerCase().replace(/\s+/g, '-')}`}>
+    <a
+      className={className}
+      href={mapsLink}
+      target="_blank"
+      rel="noreferrer"
+      data-testid="link-google-maps"
+    >
       {children}
-      <ArrowUpRight size={15} strokeWidth={1.8} aria-hidden="true" />
+      <ArrowUpRight size={16} strokeWidth={2} aria-hidden="true" />
     </a>
   );
 }
 
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <div className="site-shell">
-      <div className="topline">
-        <div className="topline-inner">
-          <span>Independent automotive studio · Est. 2003</span>
-          <a href="tel:+611300808158" data-testid="link-topline-phone">Call +61 1300 808 158</a>
-        </div>
+      <div className="announcement">
+        <span><strong>5.0 on Google</strong> · A friendly local wash in Thalakulathur</span>
       </div>
 
       <header className="site-header">
         <div className="header-inner">
-          <a href="#top" onClick={closeMenu} aria-label="Wash & Ryde home" data-testid="link-brand-home">
-            <BrandMark />
+          <a href="#top" onClick={closeMenu} aria-label="WASH&RIDE home" data-testid="link-home">
+            <Wordmark />
           </a>
           <nav className={`nav-links ${menuOpen ? 'is-open' : ''}`} aria-label="Primary navigation">
             {navItems.map((item) => (
-              <a href={item.href} key={item.href} onClick={closeMenu} data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}>{item.label}</a>
+              <a href={item.href} key={item.href} onClick={closeMenu} data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}>
+                {item.label}
+              </a>
             ))}
-            <a href="mailto:manager@washandryde.com.au?subject=Wash%20%26%20Ryde%20enquiry" className="header-cta" onClick={closeMenu} data-testid="link-header-enquire">Enquire</a>
+            <MapButton className="button button-primary nav-cta">Get directions</MapButton>
           </nav>
-          <button type="button" className="menu-button focus-ring" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)} data-testid="button-mobile-menu">
-            {menuOpen ? <X size={23} strokeWidth={1.5} /> : <Menu size={23} strokeWidth={1.5} />}
+          <button
+            type="button"
+            className="menu-button focus-ring"
+            aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+            data-testid="button-mobile-menu"
+          >
+            {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
           </button>
         </div>
       </header>
 
       <main id="top">
         <section className="hero" aria-labelledby="hero-title">
-          <img className="hero-photo" src={washPhoto} alt="Blue vehicle receiving a careful hand wash at Wash & Ryde" />
-          <div className="hero-shade" aria-hidden="true" />
+          <img
+            className="hero-photo"
+            src={washPhoto}
+            alt="WASH&RIDE staff member pressure-washing a black Mercedes inside the wash bay"
+          />
+          <div className="hero-overlay" aria-hidden="true" />
           <div className="hero-content reveal">
-            <div className="eyebrow hero-kicker">Ryde · Sydney · Est. 2003</div>
-            <h1 id="hero-title" className="display hero-title">Ride clean.<br /><em>Shine bright.</em></h1>
-            <div className="hero-bottom">
-              <p className="hero-copy">Premium car care for people who notice the details. Paint correction, ceramic coating and considered detailing from a team with 20+ years behind the wheel.</p>
+            <div className="eyebrow hero-kicker">Car wash · Thalakulathur</div>
+            <h1 id="hero-title" className="display hero-title">Clean car.<br /><em>Good day.</em></h1>
+            <div className="hero-subrow">
+              <p className="hero-copy">
+                A dependable neighborhood wash for cars around Thalakulathur and Kozhikode. Pull in dusty, drive out ready.
+              </p>
               <div>
                 <div className="hero-actions">
-                  <ArrowLink href="mailto:manager@washandryde.com.au?subject=Wash%20%26%20Ryde%20enquiry">Start an enquiry</ArrowLink>
-                  <a href="#services" className="button button-ghost" data-testid="link-hero-services">Explore services <ChevronRight size={15} aria-hidden="true" /></a>
+                  <MapButton>Get directions</MapButton>
+                  <a href="#services" className="button button-outline" data-testid="link-hero-services">
+                    See what we do <ChevronRight size={16} aria-hidden="true" />
+                  </a>
                 </div>
-                <div className="hero-index">Scroll to explore <span>↓</span></div>
+                <div className="hero-location">
+                  <MapPinned size={15} aria-hidden="true" />
+                  <span>V K Road, near TVS NEW ATHOLI MOTORS<br />Thalakulathur, Kozhikode</span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         <section className="intro" aria-labelledby="intro-title">
-          <div className="container-wide intro-grid">
+          <div className="container intro-grid">
             <div>
-              <div className="eyebrow">01 / The difference</div>
-              <h2 id="intro-title" className="display intro-title">Not just a wash.<br /><em>A better finish.</em></h2>
+              <div className="eyebrow">01 / The local difference</div>
+              <h2 id="intro-title" className="display intro-title">A proper wash,<br /><em>close to home.</em></h2>
             </div>
-            <div>
-              <p className="intro-copy">Your car is an investment, a daily ritual, and sometimes the first impression. We treat it accordingly — with patient hands, proven products and an eye for the finish that other places miss.</p>
-              <div className="rule" />
-              <div className="stats" aria-label="Wash & Ryde highlights">
-                <div><strong className="stat-number">20+</strong><span className="stat-label">Years of experience</span></div>
-                <div><strong className="stat-number">2024</strong><span className="stat-label">Local Business Awards finalist</span></div>
-                <div><strong className="stat-number">1:1</strong><span className="stat-label">Care for every vehicle</span></div>
+            <div className="intro-right">
+              <p className="intro-copy">
+                You know the place: the road dust, the monsoon splash, the film that builds up on a daily car. WASH&RIDE keeps the answer simple — a careful, practical clean from a team that welcomes you in.
+              </p>
+              <div className="intro-rule" />
+              <div className="quick-facts" aria-label="WASH&RIDE highlights">
+                <div><strong className="fact-number">5.0</strong><span className="fact-label">Google rating</span></div>
+                <div><strong className="fact-number">7</strong><span className="fact-label">Days open</span></div>
+                <div><strong className="fact-number">4</strong><span className="fact-label">Google reviews</span></div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="dark-band" id="services" aria-labelledby="services-title">
-          <div className="container-wide">
-            <div className="section-head">
+        <section className="services" id="services" aria-labelledby="services-title">
+          <div className="container">
+            <div className="section-heading">
               <div>
                 <div className="eyebrow">02 / What we do</div>
-                <h2 id="services-title" className="display section-title">The finish<br /><em>is everything.</em></h2>
+                <h2 id="services-title" className="display section-title">The clean<br /><em>your car needs.</em></h2>
               </div>
-              <p className="section-note">A focused menu of services, tailored to where your car is now — and where you want it to be.</p>
+              <p className="section-note">Straightforward car wash care for busy days, family cars and the vehicle you are proud to keep tidy.</p>
             </div>
             <div className="service-list">
               {services.map(([number, name, description]) => (
-                <a className="service-item" href="mailto:manager@washandryde.com.au?subject=Wash%20%26%20Ryde%20service%20enquiry" key={number} data-testid={`link-service-${number}`}>
+                <a className="service-item" href={mapsLink} target="_blank" rel="noreferrer" key={number} data-testid={`link-service-${number}`}>
                   <span className="service-number">{number}</span>
                   <span className="service-name">{name}</span>
                   <span className="service-description">{description}</span>
-                  <ChevronRight className="service-arrow" size={20} strokeWidth={1.3} aria-hidden="true" />
+                  <ChevronRight className="service-arrow" size={20} aria-hidden="true" />
                 </a>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="editorial" id="studio" aria-labelledby="studio-title">
-          <div className="container-wide editorial-grid">
-            <figure className="editorial-image-wrap">
-              <img className="editorial-image" src={washPhoto} alt="Detailer working across the blue bodywork of a vehicle" />
-              <figcaption className="image-caption">The work is in the details</figcaption>
+        <section className="local" id="place" aria-labelledby="place-title">
+          <div className="container local-grid">
+            <figure className="local-photo-wrap">
+              <img
+                className="local-photo"
+                src={washPhoto}
+                alt="WASH&RIDE staff member pressure-washing a black Mercedes in the wash bay"
+              />
+              <figcaption className="photo-tag">A real wash at WASH&RIDE</figcaption>
             </figure>
             <div>
-              <div className="eyebrow">03 / The studio</div>
-              <h2 id="studio-title" className="display editorial-title">Good work<br />looks <em>different.</em></h2>
-              <p className="editorial-copy">Wash & Ryde is a local automotive studio built on repeat customers and word of mouth. No conveyor belts. No rushed handovers. Just a proper assessment, a clear recommendation and the time to do it right.</p>
-              <a href="#process" className="button button-primary" data-testid="link-studio-process">How we work <ChevronRight size={15} aria-hidden="true" /></a>
-              <div className="signature">
-                <span className="signature-mark"><img src={logoAsset} alt="" aria-hidden="true" /></span>
-                <span><strong>Wash & Ryde</strong><span>748 Victoria Road, Ryde NSW 2112</span></span>
+              <div className="eyebrow">03 / In the bay</div>
+              <h2 id="place-title" className="display local-title">Water, foam,<br /><em>then shine.</em></h2>
+              <p className="local-copy">
+                No grand promises. Just the satisfying basics done well: good pressure, plenty of foam, attention around the wheels and a team that treats your car with respect.
+              </p>
+              <a href="#hours" className="button button-blue" data-testid="link-place-hours">
+                Check today&apos;s hours <Clock3 size={16} aria-hidden="true" />
+              </a>
+              <div className="address-chip">
+                <MapPinned size={19} aria-hidden="true" />
+                <div>
+                  <strong>Find us on V K Road</strong>
+                  <span>Near TVS NEW ATHOLI MOTORS, Thalakulathur, Kozhikode, Kerala 673317</span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="process" id="process" aria-labelledby="process-title">
-          <div className="container-wide process-grid">
-            <div className="process-intro">
-              <div className="eyebrow">04 / Our approach</div>
-              <h2 id="process-title" className="display section-title">Care,<br /><em>by design.</em></h2>
-              <p>Because a great result starts before the bucket comes out. We keep the conversation clear and the standard high.</p>
+        <section className="hours-section" id="hours" aria-labelledby="hours-title">
+          <div className="container hours-grid">
+            <div className="hours-intro">
+              <div className="eyebrow">04 / Plan your visit</div>
+              <h2 id="hours-title" className="display hours-title">Open when<br /><em>you need us.</em></h2>
+              <p>Hours can make all the difference on a busy day. Check the weekly schedule, then use Google Maps for the quickest route.</p>
             </div>
-            <div className="process-steps">
-              <div className="process-step"><span className="step-num">01</span><div><h3 className="step-title">We inspect</h3><p className="step-copy">Every vehicle gets a proper look over. Paint condition, interior wear, your priorities — we start with what is actually in front of us.</p></div></div>
-              <div className="process-step"><span className="step-num">02</span><div><h3 className="step-title">We recommend</h3><p className="step-copy">You get a straightforward plan, not a sales pitch. We explain the work, the result and the right level of protection for your car.</p></div></div>
-              <div className="process-step"><span className="step-num">03</span><div><h3 className="step-title">We refine</h3><p className="step-copy">The final pass is where the difference lives — the edges, the glass, the finish, the details you notice when you walk back up to your car.</p></div></div>
+            <div className="hours-list" aria-label="WASH&RIDE opening hours">
+              {hours.map(([day, time]) => (
+                <div className={`hours-row ${day === 'Tuesday' ? 'is-highlight' : ''}`} key={day} data-testid={`hours-${day.toLowerCase()}`}>
+                  <span>{day}</span>
+                  <span className="hours-time">{time}</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="proof" aria-labelledby="proof-title">
-          <div className="container-wide proof-layout">
+        <section className="reviews" id="reviews" aria-labelledby="reviews-title">
+          <div className="container reviews-layout">
             <div>
-              <div className="eyebrow">05 / A local standard</div>
-              <h2 id="proof-title" className="proof-quote">“The kind of finish that makes you turn around for <em>one more look.”</em></h2>
-              <div className="proof-source">— The Wash & Ryde standard</div>
-            </div>
-            <aside className="proof-aside">
-              <h3>Recognised locally.</h3>
-              <p>A 2024 Local Business Awards finalist, trusted by drivers across Ryde and Sydney’s north-west for care that lasts beyond collection day.</p>
-              <a href="https://www.facebook.com/washandryde" target="_blank" rel="noreferrer" className="button button-ghost" style={{ color: 'hsl(var(--foreground))', borderColor: 'hsl(var(--foreground))' }} data-testid="link-facebook-proof">See the latest <ArrowUpRight size={15} aria-hidden="true" /></a>
-            </aside>
-          </div>
-        </section>
-
-        <section className="gallery" id="gallery" aria-labelledby="gallery-title">
-          <div className="container-wide">
-            <div className="gallery-head">
-              <div>
-                <div className="eyebrow">06 / In the bay</div>
-                <h2 id="gallery-title" className="display section-title">A closer<br /><em>look.</em></h2>
+              <div className="rating-line">
+                <span className="rating-value">5.0</span>
+                <span className="rating-stars" aria-label="5 out of 5 stars"><Star size={15} fill="currentColor" aria-hidden="true" /><Star size={15} fill="currentColor" aria-hidden="true" /><Star size={15} fill="currentColor" aria-hidden="true" /><Star size={15} fill="currentColor" aria-hidden="true" /><Star size={15} fill="currentColor" aria-hidden="true" /></span>
+                <span className="rating-caption">4 Google reviews</span>
               </div>
-              <p>Real work, real cars, real finishes. Follow along from the studio.</p>
+              <h2 id="reviews-title" className="display review-title">People come back for the wash — and the <em>welcome.</em></h2>
             </div>
-            <div className="gallery-grid">
-              <figure className="gallery-tile"><img src={washPhoto} alt="Close view of foam and water across blue vehicle paint" /><figcaption className="tile-label">Preparation / wash</figcaption></figure>
-              <figure className="gallery-tile"><img src={washPhoto} alt="Water beading across the side of a freshly cleaned vehicle" /><figcaption className="tile-label">Surface / protection</figcaption></figure>
-              <figure className="gallery-tile"><img src={washPhoto} alt="Detailer hand-washing a vehicle at the studio" /><figcaption className="tile-label">Process / by hand</figcaption></figure>
+            <div className="review-cards">
+              <article className="review-card" data-testid="review-card-one">
+                <p>“The service was excellent and the staff were very friendly and welcoming.”</p>
+                <small>Google review</small>
+              </article>
+              <article className="review-card" data-testid="review-card-two">
+                <p>“Excellent service.”</p>
+                <small>Google review</small>
+              </article>
+              <MapButton className="button button-primary">See the profile</MapButton>
             </div>
-            <a className="gallery-link" href="https://www.instagram.com/washandryde/" target="_blank" rel="noreferrer" data-testid="link-instagram-gallery">View @washandryde on Instagram <ArrowUpRight size={14} aria-hidden="true" /></a>
           </div>
         </section>
 
-        <section className="contact" id="contact" aria-labelledby="contact-title">
-          <div className="container-wide contact-grid">
+        <section className="location" aria-labelledby="location-title">
+          <div className="container location-grid">
             <div>
-              <div className="eyebrow" style={{ color: '#f2c5bf' }}>07 / Ready when you are</div>
-              <h2 id="contact-title" className="display contact-title">Let’s make<br />it <em>shine.</em></h2>
-              <p className="contact-copy">Tell us what you drive and what you want from the finish. We’ll take it from there.</p>
+              <div className="eyebrow">05 / Come find us</div>
+              <h2 id="location-title" className="display location-title">Your next<br /><em>clean stop.</em></h2>
+              <p className="location-copy">Look for WASH&RIDE on V K Road, near TVS NEW ATHOLI MOTORS in Thalakulathur. Tap for the exact Google Maps profile and directions.</p>
+              <MapButton className="button button-blue">Open Google Maps</MapButton>
             </div>
-            <div className="contact-details">
-              <a className="contact-detail" href="tel:+611300808158" data-testid="link-contact-phone"><small>Call the studio</small>+61 1300 808 158</a>
-              <a className="contact-detail" href="mailto:manager@washandryde.com.au?subject=Wash%20%26%20Ryde%20enquiry" data-testid="link-contact-email"><small>Email an enquiry</small>manager@washandryde.com.au</a>
-              <a className="contact-detail" href="https://www.google.com/maps/search/?api=1&query=748+Victoria+Road+Ryde+NSW+2112" target="_blank" rel="noreferrer" data-testid="link-contact-address"><small>Find the studio</small>748 Victoria Road, Ryde NSW 2112</a>
+            <figure className="streetview-frame">
+              <img className="streetview" src={streetViewPhoto} alt="Google Street View of the WASH&RIDE location on V K Road in Thalakulathur, with palm trees and the wash bay frontage" />
+              <figcaption className="streetview-caption">Thalakulathur · Kerala</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section className="contact" aria-labelledby="contact-title">
+          <div className="container contact-grid">
+            <div>
+              <div className="eyebrow" style={{ color: '#d9f17e' }}>06 / Ready when you are</div>
+              <h2 id="contact-title" className="display contact-title">Bring the<br /><em>dusty one.</em></h2>
+              <p className="contact-copy">No booking number, no complicated menu. Check the hours, follow the road and let us get your car looking right.</p>
+            </div>
+            <div className="contact-card">
+              <p>WASH&RIDE is a local car wash in Thalakulathur, Kozhikode.</p>
+              <strong className="contact-address">{address}</strong>
+              <MapButton>Get directions to WASH&RIDE</MapButton>
             </div>
           </div>
         </section>
       </main>
 
       <footer className="footer">
-        <div className="container-wide footer-inner">
-          <a href="#top" aria-label="Back to top" data-testid="link-footer-home"><BrandMark className="footer-logo" /></a>
-          <div className="footer-social">
-            <a href="https://www.instagram.com/washandryde/" target="_blank" rel="noreferrer" data-testid="link-footer-instagram">Instagram</a>
-            <a href="https://www.facebook.com/washandryde" target="_blank" rel="noreferrer" data-testid="link-footer-facebook">Facebook</a>
-          </div>
-          <div className="footer-meta">Ride clean, shine bright.<br />© {new Date().getFullYear()} Wash & Ryde</div>
+        <div className="container footer-inner">
+          <a href="#top" aria-label="Back to top" data-testid="link-footer-home"><Wordmark footer /></a>
+          <div className="footer-meta">Car wash · Thalakulathur · Kozhikode</div>
+          <a href="#top" className="footer-top" data-testid="link-footer-top">Back to top</a>
         </div>
       </footer>
     </div>
